@@ -1,7 +1,23 @@
 #pragma once
-#include "Hand.h"
+#include <iostream>
+#include <vector>
+#include "deck.h"
+using namespace std;
 
 class Table
+{
+private:
+    vector <int> cards;
+public:
+    Table();
+    ~Table();
+    void set_table(deck & d);
+    void show();
+    void tclear();
+    int give_card(int i);
+};
+
+/*class Table
 {
 private:
     vector <int> cards;
@@ -10,4 +26,4 @@ public:
     void get_table() const;
     Table();
     ~Table();
-};
+};*/

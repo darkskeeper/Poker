@@ -1,6 +1,45 @@
 #include "Table.h"
 
-extern vector <int> unic_cards;
+Table::Table()
+{
+
+}
+
+Table::~Table()
+{
+
+}
+
+void Table::set_table(deck & d)
+{
+    for (int i = 0; i < 5; i++)
+    {
+        cards.push_back(d.give_card());
+    }
+}
+
+void Table::show()
+{
+    cout << "Table: ";
+    vector <int>::iterator it;
+    for (it = cards.begin(); it != cards.end(); it++)
+    {
+        cout << *it << " ";
+    }
+    cout << endl;
+}
+
+void Table::tclear()
+{
+    cards.clear();
+}
+
+int Table::give_card(int i)
+{
+    return cards[i];
+}
+
+/*extern vector <int> unic_cards;
 
 Table::Table()
 {
@@ -82,4 +121,4 @@ bool Table::check_unic( const int temp ) const
         }
     }
     return true;
-}
+}*/
