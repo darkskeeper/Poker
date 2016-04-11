@@ -7,7 +7,7 @@ int main()
     srand(time(NULL));
     Room room_one;
     int T = 10;
-    while (T--)
+    while /*(T--)*/(true)
     {
         room_one.startgame();
         cout << endl;

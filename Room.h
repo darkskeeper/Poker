@@ -1,14 +1,14 @@
 #pragma once
-#include "deck.h"
+//#include "Deck.h"
 #include "Table.h"
 #include "Hand.h"
 
 class Room
 {
 private:
-    deck d;
+    Deck d;
     Table t;
-    Hand hand_one, hand_two;
+    vector <Hand> hands;
 public:
     void startgame();
     void show();

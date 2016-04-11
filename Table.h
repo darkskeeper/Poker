@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include "deck.h"
+#include "Deck.h"
 using namespace std;
 
 class Table
@@ -11,7 +11,7 @@ private:
 public:
     Table();
     ~Table();
-    void set_table(deck & d);
+    void set_table(Deck & d);
     void show();
     void tclear();
     int give_card(int i);

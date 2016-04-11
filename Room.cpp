@@ -13,23 +13,34 @@ Room::~Room()
 
 void Room::startgame()
 {
+    Hand hand;
+    hands.push_back(hand);
+    hands.push_back(hand);
     d.shuffle();
     t.set_table(d);
-    hand_one.set_hand(d, t);
-    hand_two.set_hand(d, t);
+    hands[0].set_hand(d, t);
+    hands[1].set_hand(d, t);
     show();
-    if (hand_one > hand_two)
+    if (hands[0] == hands[1])
     {
-        cout << endl << "HAND ONE WIN!" << endl;
+        cout << endl << "TIE!" << endl;
     }
     else
     {
-        cout << endl << "HAND TWO WIN!" << endl;
+        if (hands[0] > hands[1])
+        {
+            cout << endl << "HAND ONE WIN" << endl;
+        }
+        else
+        {
+            cout << endl << "HAND TWO WIN!" << endl;
+        }
     }
     t.tclear();
-    hand_one.hclear();
-    hand_two.hclear();
+    hands[0].hclear();
+    hands[1].hclear();
     d.dclear();
+    hands.clear();
 }
 
 void Room::show()

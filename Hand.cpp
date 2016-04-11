@@ -1,15 +1,5 @@
 #include "Hand.h"
 
-const int SUITS = 4;
-const int ONE_SUIT = 13;
-const int N_CARDS_HAND = 2;
-const int N_CARDS = 52;
-const int N_CARDS_TABLE = 5;
-
-enum RANK {TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, TEN, JACKET, QUEEN, KING, ACE};
-enum COMBINATIONS {HIGH_CARD, PAIR, TWO_PAIRS, THREE_OF_A_KIND, STRAIGHT, FLASH, FULL_HOUSE, FOUR_OF_A_KIND, STRAIGHT_FLASH, ROYAL_FLASH};
-enum SUIT { CLUBS, SPADES, DIAMONDS, HEARTS};
-string c[10] = { "HIGH_CARD", "PAIR", "TWO_PAIRS", "THREE_OF_A_KIND", "STRAIGHT", "FLASH", "FULL_HOUSE", "FOUR_OF_A_KIND", "STRAIGHT_FLASH", "ROYAL_FLASH"};
 
 Hand::Hand()
 {
@@ -21,7 +11,7 @@ Hand::~Hand()
 
 }
 
-void Hand::set_hand(deck & d, Table t)
+void Hand::set_hand(Deck & d, Table t)
 {
     for (int i = 0; i < N_CARDS_HAND; i++)
     {
@@ -43,7 +33,7 @@ void Hand::sort()
     {
         for (int k = i + 1; k < N_CARDS_HAND + N_CARDS_TABLE; k++)
         {
-            if ((cards[i] % 13) > (cards[k] % 13))
+            if ((cards[i] % 13) < (cards[k] % 13))
             {
                 swap(cards[i], cards[k]);
             }
@@ -105,11 +95,59 @@ void Hand::show()
 void Hand::hclear()
 {
     cards.clear();
+    current_comb.clear();
 }
 
 bool operator > (const Hand& h1, const Hand& h2)
 {
-    return (h1.comb > h2.comb);
+    if (h1.comb == h2.comb)
+    {
+        vector<int>::const_iterator it, it1;
+        it = h1.current_comb.begin();
+        it1 = h2.current_comb.begin();
+        for (it; it != h1.current_comb.end(); it++)
+        {
+            if (*it != *it1)
+            {
+                return *it>*it1;
+            }
+            it1++;
+        }
+    }
+    else
+    {
+        return (h1.comb > h2.comb);
+    }
+}
+
+bool operator == (const Hand& h1, const Hand& h2)
+{
+    /*if (h1.comb == STRAIGHT_FLASH || h2.comb == STRAIGHT_FLASH)
+    {
+        cout << " ";
+    }*/
+    if (h1.comb == h2.comb)
+    {
+        /*if (h1.comb == STRAIGHT_FLASH || h1.comb == STRAIGHT)
+        {
+            cout << " ";
+        }*/
+        vector<int>::const_iterator it, it1;
+        it = h1.current_comb.begin();
+        it1 = h2.current_comb.begin();
+        for (it; it != h1.current_comb.end(); it++)
+        {
+            if (*it != *it1)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 void Hand::det_comb()
@@ -124,16 +162,17 @@ void Hand::det_comb()
     {
         combs[def_cards[i + (CLUBS * ONE_SUIT)] + def_cards[i + (SPADES * ONE_SUIT)] + def_cards[i + (DIAMONDS * ONE_SUIT)] + def_cards[i + (HEARTS * ONE_SUIT)]]++;
     }
-
     if (combs[4] == 1)
     {
         comb = FOUR_OF_A_KIND;
+        //setFOAK(cards);
     }
-    else if ((combs[3] == 1 && combs[2] >= 1) || combs[3]>1)
+    else if ((combs[3] == 1 && combs[2] >= 1) || combs[3] > 1 )
     {
         comb = FULL_HOUSE;
+        //setFH(cards);
     }
-    else if (combs[1] >= 5)
+    else if (combs[1] + combs[2] + combs[3] >= 5)
     {
         if (straight_check())
         {
@@ -163,31 +202,38 @@ void Hand::det_comb()
         else if (flash_check())
         {
             comb = FLASH;
+            setFl(cards);
         }
         else if (combs[3] == 1)
         {
             comb = THREE_OF_A_KIND;
+            setTOAK(cards);
         }
         else if (combs[2] >= 2)
         {
             comb = TWO_PAIRS;
+            //setTP(cards);
         }
         else if (combs[2] == 1)
         {
             comb = PAIR;
+            setOP(cards);
         }
         else
         {
             comb = HIGH_CARD;
+            setHC(cards);
         }
     }
     else if (combs[3] == 1)
     {
         comb = THREE_OF_A_KIND;
+        setTOAK(cards);
     }
     else if (combs[2] >= 2)
     {
         comb = TWO_PAIRS;
+        //setTP(cards);
     }
 }
 
@@ -230,101 +276,114 @@ bool Hand::straight_check()
     }
     for (int i = 0; i + 4 < ranks.size(); i++)
     {
-        if (ranks[i] + 4 == ranks[i + 4])
+        if (ranks[i] - 4 == ranks[i + 4])
         {
+            current_comb.push_back(ranks[i]); //???????????????
             return true;
         }
     }
-    if (ranks[0] == TWO && ranks[1] == THREE && ranks[2] == FOUR && ranks[3] == FIVE && ranks[ranks.size() - 1] == ACE)
+    int rs = ranks.size() - 1;
+    if (ranks[rs] == TWO && ranks[rs - 1] == THREE && ranks[rs - 2] == FOUR && ranks[rs - 3] == FIVE && ranks[0] == ACE)
     {
+        current_comb.push_back(-1);
         return true;
     }
     return false;
 }
 
-/*extern vector <int> unic_cards;
-
-Hand::Hand()
+void Hand::setHC(vector <int> ccards)
 {
-    int temp;
-    for (int i = 0; i < 2; i++)
+    vector <int> ::iterator it;
+    int i = 0;
+    for (it = ccards.begin(); i < 5; it++, i++)
     {
-        do
-        {
-            temp = rand() % 52;
-        } while (!check_unic(temp));
-        cards.push_back(temp);
-        unic_cards.push_back(temp);
+        current_comb.push_back(*it);
     }
 }
 
-Hand::~Hand()
+void Hand::setOP(vector <int> ccards)
 {
-}
-
-void Hand::get_hand() const
-{
-    for (int i = 0; i < 2; i++)
+    vector <int>::iterator it, it1;
+    it = ccards.begin();
+    while (current_comb.empty())
     {
-        int temp = cards[i] % 13;
-        if (temp + 2 < 10)
+        for (it1 = it + 1; it1 != ccards.end(); it1++)
         {
-            cout << temp + 2 << "_";
-        }
-        else
-        {
-            switch (temp)
+            if ((*it % 13) == (*it1 % 13))
             {
-            case 8:
-                cout << "Ten" << "_";
-                break;
-            case 9:
-                cout << "Jacket" << "_";
-                break;
-            case 10:
-                cout << "Queen" << "_";
-                break;
-            case 11:
-                cout << "King" << "_";
-                break;
-            case 12:
-                cout << "Ace" << "_";
+                current_comb.push_back(*it % 13);
                 break;
             }
         }
-        switch (cards[i] / 13)
+        if (current_comb.empty())
         {
-        case 0:
-            cout << "Clubs ";
-            break;
-        case 1:
-            cout << "Spades ";
-            break;
-        case 2:
-            cout << "Diamonds ";
-            break;
-        case 3:
-            cout << "Hearts ";
-            break;
+            it++;
         }
     }
-    cout << endl;
-}
-
-bool Hand::check_unic(const int temp) const
-{
-    vector <int>::iterator it;
-    for (it = unic_cards.begin(); it != unic_cards.end(); it++)
+    ccards.erase(it1);
+    ccards.erase(it);
+    int i = 0;
+    for (it = ccards.begin(); i < 3; it++, i++)
     {
-        if (temp == *it)
-        {
-            return false;
-        }
+        current_comb.push_back(*it);
     }
-    return true;
 }
 
-bool compare()
+void Hand::setTOAK(vector <int> ccards)
 {
-    return false;
-}*/
+    vector <int>::iterator it, it1;
+    it = ccards.begin();
+    while (current_comb.empty())
+    {
+        for (it1 = it + 1; it1 < ccards.end(); it1++)
+        {
+            if (*it % 13 == *it1 % 13)
+            {
+                if (current_comb.empty())
+                {
+                    current_comb.push_back(*it % 13);
+                }
+                ccards.erase(it1);
+                it1 = it;
+            }
+        }
+        if (current_comb.empty())
+        {
+            it++;
+        }
+    }
+    ccards.erase(it);
+    int i = 0;
+    for (it = ccards.begin(); i < 2; it++, i++)
+    {
+        current_comb.push_back(*it);
+    }
+}
+
+void Hand::setFl(vector <int> ccards)
+{
+    int suit;
+    vector <int> suits(4, 0);
+    for (int i = 0; i < N_CARDS_HAND + N_CARDS_TABLE; i++)
+    {
+        suits[(ccards[i] / 13)]++;
+    }
+    for (int i = 0; i < SUITS; i++)
+    {
+        if (suits[i] >= 5)
+        {
+            suit = i;
+            break;
+        }
+    }
+    vector <int>::iterator it;
+    int i = 0;
+    for (it = ccards.begin(); i < 5; it++)
+    {
+        if ((*it / 13) == suit)
+        {
+            current_comb.push_back(*it);
+            i++;
+        }
+    }
+}

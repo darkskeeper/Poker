@@ -10,7 +10,7 @@ Table::~Table()
 
 }
 
-void Table::set_table(deck & d)
+void Table::set_table(Deck & d)
 {
     for (int i = 0; i < 5; i++)
     {
@@ -24,7 +24,48 @@ void Table::show()
     vector <int>::iterator it;
     for (it = cards.begin(); it != cards.end(); it++)
     {
-        cout << *it << " ";
+        int temp = *it;
+        if (temp % 13 < 8)
+        {
+            cout << (temp % 13) + 2;
+        }
+        else
+        {
+            switch (temp % 13)
+            {
+            case TEN:
+                cout << "T";
+                break;
+            case JACKET:
+                cout << "J";
+                break;
+            case QUEEN:
+                cout << "Q";
+                break;
+            case KING:
+                cout << "K";
+                break;
+            case ACE:
+                cout << "A";
+                break;
+            }
+        }
+        switch (temp / 13)
+        {
+        case CLUBS:
+            cout << char(6);
+            break;
+        case SPADES:
+            cout << char(5);
+            break;
+        case DIAMONDS:
+            cout << char(4);
+            break;
+        case HEARTS:
+            cout << char(3);
+            break;
+        }
+        cout << " ";
     }
     cout << endl;
 }

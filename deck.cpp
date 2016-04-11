@@ -1,15 +1,15 @@
-#include "deck.h"
+#include "Deck.h"
 
 
-deck::deck()
+Deck::Deck()
 {
 }
 
-deck::~deck()
+Deck::~Deck()
 {
 }
 
-void deck::shuffle()
+void Deck::shuffle()
 {
     for (int i = 0; i < 52; i++)
     {
@@ -25,18 +25,59 @@ void deck::shuffle()
     }
 }
 
-void deck::show()
+void Deck::show()
 {
     cout << "Deck: ";
     vector <int>::iterator it;
     for (it = cards.begin(); it != cards.end(); it++)
     {
-        cout << *it << " ";
+        int temp = *it;
+        if (temp % 13 < 8)
+        {
+            cout << (temp % 13) + 2;
+        }
+        else
+        {
+            switch (temp % 13)
+            {
+            case TEN:
+                cout << "T";
+                break;
+            case JACKET:
+                cout << "J";
+                break;
+            case QUEEN:
+                cout << "Q";
+                break;
+            case KING:
+                cout << "K";
+                break;
+            case ACE:
+                cout << "A";
+                break;
+            }
+        }
+        switch (temp / 13)
+        {
+        case CLUBS:
+            cout << char(6);
+            break;
+        case SPADES:
+            cout << char(5);
+            break;
+        case DIAMONDS:
+            cout << char(4);
+            break;
+        case HEARTS:
+            cout << char(3);
+            break;
+        }
+        cout << " ";
     }
     cout << endl;
 }
 
-int deck::give_card()
+int Deck::give_card()
 {
     int cc = cards.size();
     int i = rand() % cards.size();
@@ -48,7 +89,7 @@ int deck::give_card()
     return temp;
 }
 
-void deck::dclear()
+void Deck::dclear()
 {
     cards.clear();
 }
