@@ -8,22 +8,12 @@ class Table
 {
 private:
     vector <int> cards;
+    void sort();
 public:
     Table();
     ~Table();
-    void set_table(Deck & d);
-    void show();
+    void set_table(Deck & d);//
+    void show() const;
     void tclear();
-    int give_card(int i);
+    int give_card(const int & i);
 };
-
-/*class Table
-{
-private:
-    vector <int> cards;
-    bool check_unic( const int temp ) const;
-public:
-    void get_table() const;
-    Table();
-    ~Table();
-};*/

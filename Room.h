@@ -1,5 +1,4 @@
 #pragma once
-//#include "Deck.h"
 #include "Table.h"
 #include "Hand.h"
 
@@ -11,7 +10,7 @@ private:
     vector <Hand> hands;
 public:
     void startgame();
-    void show();
+    void show() const;
     Room();
     ~Room();
 };

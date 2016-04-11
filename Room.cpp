@@ -43,10 +43,13 @@ void Room::startgame()
     hands.clear();
 }
 
-void Room::show()
+void Room::show() const
 {
     t.show();
-    //hand_one.show();
-    //hand_two.show();
+    vector <Hand>::const_iterator it;
+    for (it = hands.begin(); it != hands.end(); it++)
+    {
+        (*it).show();
+    }
     d.show();
 }

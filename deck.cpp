@@ -25,10 +25,10 @@ void Deck::shuffle()
     }
 }
 
-void Deck::show()
+void Deck::show() const
 {
     cout << "Deck: ";
-    vector <int>::iterator it;
+    vector <int>::const_iterator it;
     for (it = cards.begin(); it != cards.end(); it++)
     {
         int temp = *it;

@@ -22,7 +22,7 @@ public:
     Deck();
     ~Deck();
     void shuffle();
-    void show();
+    void show() const;
     int give_card();
     void dclear();
 };
